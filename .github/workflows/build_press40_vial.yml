@@ -1,0 +1,40 @@
+name: Build press40 Vial firmware
+
+on:
+  push:
+    branches:
+      - press40-vial
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli:latest
+    steps:
+      - name: Checkout keymap source
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Checkout Vial-QMK
+        uses: actions/checkout@v4
+        with:
+          repository: vial-kb/vial-qmk
+          ref: vial
+          path: vial-qmk
+          submodules: recursive
+
+      - name: Copy press40 keyboard into Vial-QMK
+        run: |
+          mkdir -p vial-qmk/keyboards/3dango_academy
+          cp -R source/keyboards/3dango_academy/press40 vial-qmk/keyboards/3dango_academy/press40
+
+      - name: Build firmware
+        working-directory: vial-qmk
+        run: qmk compile -kb 3dango_academy/press40 -km vial
+
+      - name: Upload UF2
+        uses: actions/upload-artifact@v4
+        with:
+          name: press40-vial-rp2040-uf2
+          path: vial-qmk/*.uf2
