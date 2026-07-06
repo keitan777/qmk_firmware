@@ -25,3 +25,5 @@ jobs:
         with:
           name: keyhive_ut472_default
           path: keyhive_ut472_default.hex
+
+# Triggered for UT47.2 default firmware build.
