@@ -1,0 +1,27 @@
+name: Build UT47.2 default firmware
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build-ut472-default.yml"
+      - "keyboards/keyhive/ut472/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build keyhive/ut472:default
+        run: make keyhive/ut472:default
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: keyhive_ut472_default
+          path: keyhive_ut472_default.hex
